@@ -1,6 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using TheatreTicketSystem.Data;
+using TheatreTicketSystem.Repository.Data;
+using TheatreTicketSystem.Repository.Implementations;
+using TheatreTicketSystem.Service.Interfaces;
+using TheatreTicketSystem.Service.Implementations;
+using TheatreTicketSystem.Repostory.Implementations;
+using TheatreTicketSystem.Repostory.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +18,11 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<IPlayRepository, PlayRepository>();
+builder.Services.AddScoped<IShowRepository, ShowRepository>();
+
+builder.Services.AddScoped<IPlayService, PlayService>();
 
 var app = builder.Build();
 
@@ -33,6 +43,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
