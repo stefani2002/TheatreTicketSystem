@@ -1,8 +1,23 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model List<TheatreTicketSystem.Domain.Entities.Play>
+
+@{
+    ViewData["Title"] = "Theatre Plays";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h2>Theatre Plays</h2>
+
+<div class="row">
+    @foreach (var play in Model)
+    {
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">@play.Title</h5>
+                    <p class="card-text">@play.Description</p>
+                    <p><strong>Genre:</strong> @play.Genre</p>
+                    <p><strong>Duration:</strong> @play.DurationMinutes min</p>
+                </div>
+            </div>
+        </div>
+    }
 </div>

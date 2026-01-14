@@ -1,32 +1,21 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
-using TheatreTicketSystem.Models;
+using TheatreTicketSystem.Service.Interfaces;
 
-namespace TheatreTicketSystem.Controllers
+namespace TheatreTicketSystem.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IPlayService _playService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IPlayService playService)
         {
-            _logger = logger;
+            _playService = playService;
         }
 
         public IActionResult Index()
         {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var plays = _playService.GetAllPlays();
+            return View(plays);
         }
     }
 }
