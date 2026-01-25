@@ -1,0 +1,40 @@
+﻿@model TheatreTicketSystem.Domain.Entities.Show
+@{
+    ViewData["Title"] = "Edit Show";
+}
+
+<h2>Edit</h2>
+
+<form asp-action="Edit" method="post" class="mt-3">
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+    <input type="hidden" name="id" value="@Model.Id" />
+    <input type="hidden" asp-for="PlayId" />
+
+    <div class="mb-3">
+        <label class="form-label">Датум и време</label>
+        <input asp-for="ShowTime" type="datetime-local" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Цена (MKD)</label>
+        <input asp-for="Price" type="number" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Вкупен број на седишта</label>
+        <input asp-for="TotalSeats" type="number" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Слободни седишта</label>
+        <input asp-for="AvailableSeats" type="number" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update</button>
+    <a class="btn btn-secondary ms-2" asp-action="Index" asp-route-playId="@Model.PlayId">Back</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

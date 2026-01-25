@@ -1,0 +1,132 @@
+﻿@model TheatreTicketSystem.Service.ViewModels.PaymentVm
+@{
+    ViewData["Title"] = "Payment";
+}
+
+<h2>Payment</h2>
+
+<div class="row mt-3 g-4">
+    <div class="col-lg-5">
+        <div class="pay-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div class="pay-chip"></div>
+                <div class="pay-brand" id="brandLabel">CARD</div>
+            </div>
+
+            <div class="pay-number mt-3" id="previewNumber">#### #### #### ####</div>
+
+            <div class="pay-row">
+                <div>
+                    <div class="pay-label">CARDHOLDER</div>
+                    <div class="pay-value" id="previewHolder">FULL NAME</div>
+                </div>
+                <div>
+                    <div class="pay-label">EXPIRES</div>
+                    <div class="pay-value" id="previewExpiry">MM/YY</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-3 mt-3">
+            <h5 class="mb-2">Order Summary</h5>
+            <div><strong>Play:</strong> @Model.PlayTitle</div>
+            <div><strong>Show time:</strong> @Model.ShowTime.ToString("dd.MM.yyyy HH:mm")</div>
+            <div><strong>Quantity:</strong> @Model.Quantity</div>
+            <div class="mt-2"><strong>Total:</strong> @Model.TotalPrice MKD</div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card p-4">
+            <h5 class="mb-3">Card details</h5>
+
+            <div asp-validation-summary="All" class="text-danger mb-2"></div>
+
+            <form asp-action="PayAndBuy" method="post" autocomplete="off">
+                <input type="hidden" asp-for="ShowId" />
+                <input type="hidden" asp-for="Quantity" />
+
+                <div class="mb-3">
+                    <label class="form-label">Cardholder name</label>
+                    <input asp-for="CardHolderName" class="form-control card-input" id="inpHolder" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Card number</label>
+                    <input asp-for="CardNumber" class="form-control card-input" id="inpNumber" inputmode="numeric" />
+                    <div class="small-note mt-1">Test: 4242 4242 4242 4242</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Expiry (MM)</label>
+                        <input asp-for="ExpMonth" type="number" class="form-control card-input" id="inpMonth" min="1" max="12" />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Expiry (YYYY)</label>
+                        <input asp-for="ExpYear" type="number" class="form-control card-input" id="inpYear" min="2024" max="2099" />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">CVV</label>
+                        <input asp-for="Cvv" class="form-control card-input" id="inpCvv" inputmode="numeric" maxlength="4" />
+                    </div>
+                </div>
+
+                <div class="card-actions">
+                    <button type="submit" class="btn btn-success w-100 py-2">
+                        BUY TICKET
+                    </button>
+                </div>
+
+                <div class="small-note mt-3">
+                    Test card in DB: <strong>4242424242424242</strong> / <strong>12</strong> / <strong>2030</strong> / <strong>123</strong>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function detectBrand(num) {
+            if (num.startsWith("4")) return "VISA";
+            if (num.startsWith("5")) return "MASTERCARD";
+            return "CARD";
+        }
+
+        function formatCardNumber(value) {
+            const digits = value.replace(/\D/g, "").slice(0, 19);
+            const parts = [];
+            for (let i = 0; i < digits.length; i += 4) parts.push(digits.slice(i, i + 4));
+            return parts.join(" ");
+        }
+
+        function setPreview() {
+            const holder = document.getElementById("inpHolder").value.trim();
+            const rawNum = document.getElementById("inpNumber").value.trim();
+            const month = document.getElementById("inpMonth").value.trim();
+            const year = document.getElementById("inpYear").value.trim();
+
+            const formatted = formatCardNumber(rawNum);
+            document.getElementById("inpNumber").value = formatted;
+
+            const digitsOnly = formatted.replace(/\s/g, "");
+            document.getElementById("brandLabel").innerText = detectBrand(digitsOnly);
+
+            document.getElementById("previewNumber").innerText = formatted.length ? formatted : "#### #### #### ####";
+            document.getElementById("previewHolder").innerText = holder.length ? holder.toUpperCase() : "FULL NAME";
+
+            const yy = year.length >= 2 ? year.slice(-2) : "YY";
+            const mm = month.length ? month.padStart(2, "0") : "MM";
+            document.getElementById("previewExpiry").innerText = `${mm}/${yy}`;
+        }
+
+        ["inpHolder", "inpNumber", "inpMonth", "inpYear"].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener("input", setPreview);
+        });
+
+        setPreview();
+    </script>
+}

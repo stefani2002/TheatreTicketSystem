@@ -10,6 +10,6 @@ namespace TheatreTicketSystem.Repostory.Interfaces
     public interface IPlayRepository
     {
         List<Play> GetAll();
-        Play GetById(Guid id);
+        Play? GetById(Guid id);
     }
 }

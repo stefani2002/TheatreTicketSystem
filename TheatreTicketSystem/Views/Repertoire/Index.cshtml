@@ -1,0 +1,158 @@
+﻿@model TheatreTicketSystem.Service.ViewModels.RepertoireCalendarVm
+
+@{
+    ViewData["Title"] = "Репертоар";
+    var first = new DateTime(Model.Year, Model.Month, 1);
+    var prev = first.AddMonths(-1);
+    var next = first.AddMonths(1);
+}
+
+<style>
+    .cal-grid {
+        table-layout: fixed;
+    }
+
+    .cal-cell {
+        vertical-align: top;
+        height: 130px;
+        padding: 8px;
+        border: 1px solid #eee;
+    }
+
+    .cal-muted {
+        background: #fafafa;
+        color: #999;
+    }
+
+    .cal-daynum {
+        font-weight: 700;
+    }
+
+    .show-mini {
+        display: flex;
+        gap: 8px;
+        margin-top: 6px;
+    }
+
+        .show-mini img {
+            width: 44px;
+            height: 44px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+    .show-title {
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1.1;
+    }
+
+    .show-time {
+        font-size: 11px;
+        color: #666;
+    }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h2 class="mb-0">Репертоар</h2>
+        <div class="text-muted">@first.ToString("MMMM yyyy")</div>
+    </div>
+
+    <div class="d-flex gap-2 align-items-center">
+        <a class="btn btn-outline-secondary"
+           asp-action="Index"
+           asp-route-year="@prev.Year"
+           asp-route-month="@prev.Month">
+            ← Prev
+        </a>
+
+        <form method="get" asp-action="Index" class="d-flex gap-2">
+            <select name="month" class="form-select" style="width:140px;">
+                @for (int m = 1; m <= 12; m++)
+                {
+                    var dt = new DateTime(Model.Year, m, 1);
+                    <option value="@m" selected="@(m == Model.Month)">
+                        @dt.ToString("MMMM")
+                    </option>
+                }
+            </select>
+
+            <select name="year" class="form-select" style="width:110px;">
+                @for (int y = DateTime.Now.Year - 1; y <= DateTime.Now.Year + 2; y++)
+                {
+                    <option value="@y" selected="@(y == Model.Year)">@y</option>
+                }
+            </select>
+
+            <button class="btn btn-primary" type="submit">Go</button>
+        </form>
+
+        <a class="btn btn-outline-secondary"
+           asp-action="Index"
+           asp-route-year="@next.Year"
+           asp-route-month="@next.Month">
+            Next →
+        </a>
+    </div>
+</div>
+
+<table class="table cal-grid">
+    <thead>
+        <tr>
+            <th>Mon</th>
+            <th>Tue</th>
+            <th>Wed</th>
+            <th>Thu</th>
+            <th>Fri</th>
+            <th>Sat</th>
+            <th>Sun</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var week in Model.Weeks)
+        {
+            <tr>
+                @foreach (var day in week)
+                {
+                    var cls = "cal-cell" + (day.IsCurrentMonth ? "" : " cal-muted");
+                    <td class="@cls">
+                        <div class="cal-daynum">@day.Date.Day</div>
+
+                        @foreach (var s in day.Shows.Take(2))
+                        {
+                            <div class="show-mini">
+                                @if (!string.IsNullOrWhiteSpace(s.PosterImagePath))
+                                {
+                                    <img src="@s.PosterImagePath" alt="poster" />
+                                }
+                                else
+                                {
+                                    <div style="width:44px;height:44px;border-radius:10px;background:#e5e7eb;"></div>
+                                }
+
+                                <div>
+                                    <div class="show-title">@s.PlayTitle</div>
+                                    <div class="show-time">
+                                        @s.ShowTime.ToString("HH:mm") • @s.Price MKD • seats: @s.AvailableSeats
+                                    </div>
+                                    <a class="btn btn-sm btn-success mt-1"
+                                       asp-controller="Tickets"
+                                       asp-action="Confirm"
+                                       asp-route-showId="@s.ShowId">
+                                        Купи билет
+                                    </a>
+                                </div>
+                            </div>
+                        }
+
+                        @if (day.Shows.Count > 2)
+                        {
+                            <div class="small text-muted mt-1">+@(@day.Shows.Count - 2) more…</div>
+                        }
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>

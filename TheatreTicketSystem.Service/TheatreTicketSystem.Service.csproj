@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="OpenAI" Version="2.8.0" />
+    <PackageReference Include="QuestPDF" Version="2025.12.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\TheatreTicketSystem.Domain\TheatreTicketSystem.Domain.csproj" />
     <ProjectReference Include="..\TheatreTicketSystem.Repostory\TheatreTicketSystem.Repostory.csproj" />
   </ItemGroup>

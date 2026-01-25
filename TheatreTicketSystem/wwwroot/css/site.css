@@ -1,4 +1,4 @@
-html {
+﻿html {
   font-size: 14px;
 }
 
@@ -19,4 +19,842 @@ html {
 
 body {
   margin-bottom: 60px;
+}
+
+/* ---- Payment card UI ---- */
+.pay-card {
+    border-radius: 16px;
+    padding: 18px;
+    background: linear-gradient(135deg, #111827, #1f2937);
+    color: white;
+    box-shadow: 0 12px 30px rgba(0,0,0,.18);
+    position: relative;
+    overflow: hidden;
+    min-height: 190px;
+}
+
+    .pay-card::after {
+        content: "";
+        position: absolute;
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        right: -120px;
+        top: -120px;
+        background: rgba(255,255,255,.08);
+    }
+
+.pay-chip {
+    width: 48px;
+    height: 36px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #fbbf24, #d97706);
+    opacity: .95;
+}
+
+.pay-brand {
+    font-weight: 700;
+    letter-spacing: .6px;
+    text-transform: uppercase;
+    font-size: 14px;
+    opacity: .95;
+}
+
+.pay-number {
+    font-size: 20px;
+    letter-spacing: 2px;
+    margin-top: 18px;
+}
+
+.pay-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 18px;
+    font-size: 12px;
+    opacity: .9;
+}
+
+.pay-label {
+    font-size: 11px;
+    opacity: .75;
+}
+
+.pay-value {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.card-input {
+    border-radius: 12px;
+    padding: 10px 12px;
+}
+
+.card-actions button {
+    border-radius: 12px;
+}
+
+.small-note {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* =========================
+   THEATRE CHATBOT (Modern UI)
+   ========================= */
+
+.chatbot {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    z-index: 9999;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+.chatbot__fab {
+    width: 60px;
+    height: 60px;
+    border: 0;
+    border-radius: 999px;
+    cursor: pointer;
+    background: linear-gradient(135deg, #8b1538 0%, #3a0b18 100%);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .35);
+    display: grid;
+    place-items: center;
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+
+    .chatbot__fab:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 16px 38px rgba(0, 0, 0, .45);
+    }
+
+.chatbot__fabIcon {
+    font-size: 22px;
+    line-height: 1;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,.35));
+}
+
+.chatbot__panel {
+    position: absolute;
+    right: 0;
+    bottom: 74px;
+    width: 370px;
+    max-width: calc(100vw - 44px);
+    height: 520px;
+    max-height: calc(100vh - 140px);
+    border-radius: 18px;
+    overflow: hidden;
+    background: rgba(14, 10, 12, .92);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, .08);
+    box-shadow: 0 24px 70px rgba(0,0,0,.55);
+    transform-origin: bottom right;
+    animation: chatIn .18s ease;
+}
+
+@keyframes chatIn {
+    from {
+        transform: scale(.98) translateY(8px);
+        opacity: .0;
+    }
+
+    to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+.chatbot-hidden {
+    display: none;
+}
+
+.chatbot__header {
+    padding: 14px 14px 12px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, rgba(139,21,56,.9) 0%, rgba(58,11,24,.9) 100%);
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.chatbot__titlewrap {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.chatbot__avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    background: rgba(255,255,255,.10);
+    border: 1px solid rgba(255,255,255,.14);
+}
+
+.chatbot__title {
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: .2px;
+}
+
+.chatbot__subtitle {
+    color: rgba(255,255,255,.80);
+    font-size: 12px;
+    margin-top: 1px;
+}
+
+.chatbot__close {
+    border: 0;
+    background: rgba(255,255,255,.10);
+    color: #fff;
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background .15s ease, transform .15s ease;
+}
+
+    .chatbot__close:hover {
+        background: rgba(255,255,255,.16);
+        transform: translateY(-1px);
+    }
+
+.chatbot__messages {
+    padding: 14px;
+    height: calc(100% - 58px - 62px);
+    overflow-y: auto;
+    scroll-behavior: smooth;
+}
+
+    .chatbot__messages::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    .chatbot__messages::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,.10);
+        border-radius: 999px;
+    }
+
+.msg {
+    display: flex;
+    margin: 10px 0;
+}
+
+    .msg.bot {
+        justify-content: flex-start;
+    }
+
+    .msg.user {
+        justify-content: flex-end;
+    }
+
+.bubble {
+    max-width: 82%;
+    padding: 11px 12px;
+    border-radius: 14px;
+    font-size: 13.5px;
+    line-height: 1.35;
+    box-shadow: 0 10px 26px rgba(0,0,0,.25);
+    border: 1px solid rgba(255,255,255,.08);
+    word-break: break-word;
+}
+
+.msg.bot .bubble {
+    background: rgba(255,255,255,.06);
+    color: rgba(255,255,255,.92);
+    border-top-left-radius: 6px;
+}
+
+.msg.user .bubble {
+    background: linear-gradient(135deg, #b01745 0%, #6d0f2b 100%);
+    color: #fff;
+    border-top-right-radius: 6px;
+}
+
+.chatbot__composer {
+    padding: 12px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    background: rgba(255,255,255,.04);
+    border-top: 1px solid rgba(255,255,255,.08);
+}
+
+.chatbot__input {
+    height: 42px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(0,0,0,.28);
+    color: rgba(255,255,255,.92);
+    padding: 0 12px;
+    outline: none;
+}
+
+    .chatbot__input::placeholder {
+        color: rgba(255,255,255,.55);
+    }
+
+    .chatbot__input:focus {
+        border-color: rgba(255, 210, 30, .55);
+        box-shadow: 0 0 0 4px rgba(255, 210, 30, .14);
+    }
+
+.chatbot__send {
+    height: 42px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 12px;
+    cursor: pointer;
+    background: #b01745;
+    color: #fff;
+    font-weight: 600;
+    transition: transform .15s ease, filter .15s ease;
+}
+
+    .chatbot__send:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.05);
+    }
+
+    .chatbot__send:disabled {
+        opacity: .6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+@media (max-width: 480px) {
+    .chatbot__panel {
+        width: 92vw;
+        height: 72vh;
+    }
+}
+
+
+:root {
+    --bg: #0b0f1a; /* deep night */
+    --panel: #111827; /* dark card */
+    --panel2: #0f172a; /* darker */
+    --text: #e5e7eb; /* light text */
+    --muted: #9ca3af; /* muted */
+    --gold: #fbbf24; /* theatre gold */
+    --burgundy: #7f1d1d; /* theatre red */
+    --accent: #8b5cf6; /* subtle accent */
+    --border: rgba(255,255,255,.10);
+}
+
+/*Navbar*/
+body {
+    background: radial-gradient(1200px 800px at 20% 0%, rgba(127,29,29,.35), transparent 55%), radial-gradient(1000px 700px at 80% 10%, rgba(139,92,246,.25), transparent 60%), var(--bg);
+    color: var(--text);
+}
+
+a {
+    color: var(--gold);
+}
+
+    a:hover {
+        color: #ffd978;
+    }
+
+.container, .container-fluid {
+    color: var(--text);
+}
+
+.navbar.theatre-nav {
+    background: rgba(12, 16, 28, .55) !important;
+    border-bottom: 1px solid rgba(255,255,255,.10) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding-top: 12px;
+    padding-bottom: 12px;
+    margin-bottom: 0 !important;
+}
+
+.theatre-nav .navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 900;
+    letter-spacing: .6px;
+    color: var(--foreground) !important;
+    text-transform: none;
+}
+
+.theatre-logo {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theatre-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.theatre-nav .nav-link {
+    color: rgba(229,231,235,.86) !important;
+    font-weight: 700;
+    padding: 10px 12px !important;
+    border-radius: 10px;
+    position: relative;
+    transition: background .18s ease, color .18s ease, transform .18s ease;
+}
+
+    .theatre-nav .nav-link:hover {
+        color: var(--accent) !important;
+        background: rgba(255,255,255,.06);
+    }
+
+    /* Active link underline */
+    .theatre-nav .nav-link.active::after {
+        content: "";
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        bottom: 6px;
+        height: 2px;
+        background: var(--gold-gradient);
+        border-radius: 99px;
+        opacity: .95;
+    }
+
+.nav-pill {
+    border: 1px solid rgba(255,255,255,.14);
+    background: rgba(255,255,255,.04);
+    color: rgba(229,231,235,.92) !important;
+    padding: 8px 12px !important;
+    border-radius: 999px !important;
+    font-weight: 700;
+}
+
+    .nav-pill:hover {
+        background: rgba(255,255,255,.08) !important;
+        color: var(--accent) !important;
+    }
+
+.nav-user {
+    color: rgba(229,231,235,.85);
+    font-weight: 700;
+    padding: 8px 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.10);
+}
+
+.nav-logout-btn {
+    border-radius: 999px !important;
+    padding: 8px 12px !important;
+    border: 1px solid rgba(255,255,255,.16) !important;
+    background: transparent !important;
+    color: rgba(229,231,235,.92) !important;
+    font-weight: 800 !important;
+}
+
+    .nav-logout-btn:hover {
+        background: rgba(255,255,255,.08) !important;
+        color: var(--accent) !important;
+    }
+
+.theatre-nav .navbar-toggler {
+    border-color: rgba(255,255,255,.18) !important;
+}
+
+.theatre-nav .navbar-toggler-icon {
+    filter: invert(1);
+}
+
+
+
+/* Global cards */
+.card, .list-group-item, .table {
+    background: rgba(17,24,39,.75) !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text) !important;
+}
+
+    .table th, .table td {
+        color: var(--text) !important;
+    }
+
+.text-muted {
+    color: var(--muted) !important;
+}
+
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(135deg, var(--burgundy), #b91c1c) !important;
+    border: none !important;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #059669, #10b981) !important;
+    border: none !important;
+}
+
+.btn-outline-secondary {
+    border-color: rgba(255,255,255,.25) !important;
+    color: var(--text) !important;
+}
+
+    .btn-outline-secondary:hover {
+        background: rgba(255,255,255,.08) !important;
+    }
+
+/* HERO */
+.hero-wrap {
+    position: relative;
+    border-radius: 22px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: 0 20px 60px rgba(0,0,0,.35);
+}
+
+.hero-img {
+    width: 100%;
+    height: 380px;
+    object-fit: cover;
+    filter: saturate(1.05) contrast(1.05);
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(11,15,26,.15), rgba(11,15,26,.92));
+}
+
+.hero-content {
+    position: absolute;
+    left: 22px;
+    bottom: 22px;
+    right: 22px;
+}
+
+.hero-title {
+    font-size: 34px;
+    font-weight: 900;
+    line-height: 1.1;
+}
+
+.hero-sub {
+    color: var(--muted);
+    max-width: 760px;
+}
+
+/* Play cards grid */
+.play-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+@media (max-width: 1200px) {
+    .play-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .play-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 520px) {
+    .play-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.play-card {
+    background: rgba(17,24,39,.78);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    transition: transform .15s ease, box-shadow .15s ease;
+    box-shadow: 0 10px 24px rgba(0,0,0,.25);
+}
+
+    .play-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 16px 34px rgba(0,0,0,.35);
+    }
+
+.play-poster {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.play-body {
+    padding: 14px;
+}
+
+.play-title {
+    font-weight: 800;
+    margin: 0 0 6px 0;
+}
+
+.play-meta {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.play-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+html {
+    scroll-behavior: smooth;
+}
+
+/* Home overlay section (cards over hero) */
+.hero-cards {
+    margin-top: 22px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Footer */
+.site-footer {
+    margin-top: 60px;
+    border-top: 1px solid var(--border);
+    background: rgba(15,23,42,.55);
+    backdrop-filter: blur(10px);
+}
+
+    .site-footer .footer-inner {
+        padding: 26px 0;
+    }
+
+.footer-title {
+    font-weight: 800;
+}
+
+.footer-item {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.footer-link {
+    color: rgba(229,231,235,.85);
+    text-decoration: none;
+}
+
+    .footer-link:hover {
+        color: var(--gold);
+    }
+
+/* Repertoire calendar tweaks (uses your existing classes) */
+.cal-cell {
+    border-color: rgba(255,255,255,.10) !important;
+}
+
+.cal-muted {
+    background: rgba(255,255,255,.04) !important;
+}
+
+/* ===== Landing (no background) ===== */
+.landing-wrap {
+    min-height: calc(100vh - 160px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px 12px 40px 12px;
+}
+
+.landing-card {
+    width: min(1100px, 96vw);
+    padding: 18px;
+}
+
+.landing-slide {
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    gap: 18px;
+    align-items: stretch;
+}
+
+@media (max-width: 900px) {
+    .landing-slide {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Poster: longer but not full page */
+.landing-poster {
+    height: 420px; /* можеш 420–520 */
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.10);
+    background: rgba(0,0,0,.35); /* да изгледа убаво околу poster */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .landing-poster img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain; /* ✅ покажува цел постер */
+    }
+
+.no-poster {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(229,231,235,.7);
+}
+
+.landing-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 30px;
+    margin: 0;
+}
+
+.landing-meta {
+    margin-top: 8px;
+}
+
+/* Description: limited to poster height with ellipsis */
+.landing-desc {
+    margin-top: 12px;
+    color: rgba(229,231,235,.86);
+    line-height: 1.55;
+    /* clamp to height */
+    max-height: 360px; /* <-- исто како poster height */
+    overflow: hidden;
+    /* multi-line ellipsis */
+    display: -webkit-box;
+    -webkit-line-clamp: 10; /* <-- ако сакаш повеќе/помалку линии менувај */
+    -webkit-box-orient: vertical;
+}
+
+/* Buttons row */
+.landing-actions {
+    margin-top: 18px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Carousel arrows visibility */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    filter: invert(1);
+    opacity: .95;
+}
+
+
+/* ===== Play Details Page ===== */
+.details-page {
+    padding: 24px 12px 40px 12px;
+    display: flex;
+    justify-content: center;
+}
+
+.details-card {
+    width: min(1100px, 96vw);
+    padding: 18px;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 22px;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.details-poster {
+    height: 520px;
+    border-radius: 18px;
+    overflow: hidden;
+    background: rgba(0,0,0,.35);
+    border: 1px solid rgba(255,255,255,.10);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .details-poster img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+
+.details-no-poster {
+    color: rgba(229,231,235,.7);
+}
+
+.details-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    margin: 0;
+    font-size: 34px;
+}
+
+.details-meta {
+    margin-top: 10px;
+}
+
+.details-section-title {
+    font-weight: 800;
+    letter-spacing: .3px;
+}
+
+.shows-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.show-row {
+    display: grid;
+    grid-template-columns: 120px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,.10);
+    background: rgba(255,255,255,.03);
+}
+
+.show-date {
+    font-weight: 800;
+}
+
+.show-time {
+    color: rgba(229,231,235,.75);
+    font-size: 13px;
+    margin-top: 2px;
+}
+
+.show-price {
+    font-weight: 800;
+}
+
+.details-desc {
+    color: rgba(229,231,235,.88);
+    line-height: 1.65;
+    margin-bottom: 0;
+}
+
+/* Theatre red button */
+.btn-danger {
+    background: linear-gradient(135deg, #7f1d1d, #b91c1c) !important;
+    border: none !important;
 }

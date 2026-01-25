@@ -12,6 +12,6 @@ namespace TheatreTicketSystem.Domain.Entities
         public DateTime OrderDate { get; set; }
         public decimal TotalPrice { get; set; }
         public string UserId { get; set; } // Identity User
-        public ICollection<Ticket> Tickets { get; set; }
+        public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
     }
 }
