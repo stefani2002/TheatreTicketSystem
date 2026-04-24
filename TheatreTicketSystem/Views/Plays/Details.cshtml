@@ -1,0 +1,73 @@
+﻿@model TheatreTicketSystem.Domain.Entities.Play
+
+@{
+    ViewData["Title"] = Model?.Title ?? "Play Details";
+}
+
+<div class="details-page">
+    <div class="details-card glass-card">
+        <div class="details-grid">
+
+           
+            <div class="details-poster">
+                @if (!string.IsNullOrWhiteSpace(Model.PosterImagePath))
+                {
+                    <img src="@Model.PosterImagePath" alt="Poster" />
+                }
+                else
+                {
+                    <div class="details-no-poster">No image</div>
+                }
+            </div>
+
+           
+            <div class="details-info">
+                <h2 class="details-title">@Model.Title</h2>
+
+                <div class="details-meta">
+                    <span class="badge bg-secondary">@Model.Genre</span>
+                    <span class="ms-2 text-muted">@Model.DurationMinutes min</span>
+                </div>
+
+                <div class="details-section-title mt-4">Репертоар</div>
+
+                @if (Model.Shows == null || !Model.Shows.Any())
+                {
+                    <div class="text-muted mt-2">No shows scheduled yet.</div>
+                }
+                else
+                {
+                    <div class="shows-list mt-2">
+                        @foreach (var show in Model.Shows.OrderBy(s => s.ShowTime))
+                        {
+                            <div class="show-row">
+                                <div class="show-left">
+                                    <div class="show-date">@show.ShowTime.ToString("dd.MM.yyyy")</div>
+                                    <div class="show-time">@show.ShowTime.ToString("HH:mm")</div>
+                                </div>
+
+                                <div class="show-middle">
+                                    <div class="show-price">@show.Price MKD</div>
+                                    <div class="show-seats text-muted">Seats: @show.AvailableSeats</div>
+                                </div>
+
+                                <div class="show-right">
+                                    <a class="btn btn-danger btn-sm"
+                                       asp-controller="Tickets"
+                                       asp-action="Confirm"
+                                       asp-route-showId="@show.Id">
+                                        Купи билет
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+
+                <div class="details-section-title mt-4">Опис</div>
+                <p class="details-desc mt-2">@Model.Description</p>
+            </div>
+
+        </div>
+    </div>
+</div>

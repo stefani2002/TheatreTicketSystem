@@ -1,23 +1,84 @@
 ﻿@model List<TheatreTicketSystem.Domain.Entities.Play>
 
 @{
-    ViewData["Title"] = "Theatre Plays";
+    ViewData["Title"] = "Home";
 }
 
-<h2>Theatre Plays</h2>
+<div class="hero-wrap">
+    <img class="hero-img" src="~/images/theatre-hero.jpg" alt="Theatre" />
+    <div class="hero-overlay"></div>
 
-<div class="row">
-    @foreach (var play in Model)
+    <div class="hero-content">
+        <div class="hero-title">Искуси ја магијата на театарските претстави со нас!</div>
+        <div class="hero-sub mt-2">
+            Мој театар е твојата дестинација за незаборавни театарски искуства. Истражи го нашиот репертоар и резервирај ги твоите билети денес!
+        </div>
+
+        <div class="mt-3">
+            <a class="btn btn-primary" href="#plays-section">Сите претстави</a>
+            <a class="btn btn-outline-secondary ms-2" asp-controller="Repertoire" asp-action="Index">Репетроар</a>
+        </div>
+    </div>
+</div>
+
+<div class="hero-cards" id="plays-section">
+    <div class="d-flex justify-content-between align-items-end mb-3">
+        <div>
+            
+        </div>
+        
+    </div>
+
+    @if (!Model.Any())
     {
-        <div class="col-md-4">
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">@play.Title</h5>
-                    <p class="card-text">@play.Description</p>
-                    <p><strong>Genre:</strong> @play.Genre</p>
-                    <p><strong>Duration:</strong> @play.DurationMinutes min</p>
+        <div class="card p-3">
+            <div class="text-muted">No plays available.</div>
+        </div>
+    }
+    else
+    {
+        <div class="play-grid">
+            @foreach (var play in Model)
+            {
+                <div class="play-card">
+                    @if (!string.IsNullOrWhiteSpace(play.PosterImagePath))
+                    {
+                        <img src="@play.PosterImagePath" class="play-poster" alt="poster" />
+                    }
+                    else
+                    {
+                        <div style="height:180px;background:rgba(255,255,255,.06);"></div>
+                    }
+
+                    <div class="play-body">
+                        <div class="play-title">@play.Title</div>
+                        <div class="play-meta">@play.Genre · @play.DurationMinutes min</div>
+
+                        <div class="text-muted mt-2" style="font-size:13px; line-height:1.35;">
+                            @{
+                                var desc = play.Description ?? "";
+                                if (desc.Length > 120) { desc = desc.Substring(0, 120) + "..."; }
+                            }
+                            @desc
+                        </div>
+
+                        <div class="play-actions">
+                            <a class="btn btn-sm btn-primary"
+                               asp-controller="Plays"
+                               asp-action="Details"
+                               asp-route-id="@play.Id">
+                                Детали
+                            </a>
+
+                            <a class="btn btn-sm btn-outline-secondary"
+                               asp-controller="Repertoire"
+                               asp-action="Index">
+                                Репертоар
+                            </a>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            }
         </div>
     }
 </div>

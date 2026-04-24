@@ -14,7 +14,8 @@ namespace TheatreTicketSystem.Domain.Entities
         public int TotalSeats { get; set; }
         public int AvailableSeats { get; set; }
         public Guid PlayId { get; set; }
-        public Play Play { get; set; }
-        public ICollection<Ticket> Tickets { get; set; }
+        public Play? Play { get; set; }
+        public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
+
     }
 }

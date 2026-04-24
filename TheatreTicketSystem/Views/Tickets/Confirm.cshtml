@@ -1,0 +1,33 @@
+﻿@model TheatreTicketSystem.Service.ViewModels.PurchaseConfirmVm
+
+@{
+    ViewData["Title"] = "Потврди ја нарачката";
+}
+
+<h2>Потврди ја нарачката</h2>
+
+<div class="card p-3 mt-3">
+    <div asp-validation-summary="All" class="text-danger mb-2"></div>
+
+    <p><strong>Претстава:</strong> @Model.PlayTitle</p>
+    <p><strong>Датум и време:</strong> @Model.ShowTime.ToString("dd.MM.yyyy HH:mm")</p>
+    <p><strong>Цена:</strong> @Model.Price MKD</p>
+    <p><strong>Останати седишта:</strong> @Model.AvailableSeats</p>
+
+    <form asp-action="Confirm" method="post" class="mt-2">
+        <input type="hidden" asp-for="ShowId" />
+
+        <div class="mb-3" style="max-width:240px;">
+            <label class="form-label">Number of tickets</label>
+            <input asp-for="Quantity" type="number" class="form-control" min="1" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Кон наплата</button>
+        <a class="btn btn-secondary ms-2" asp-controller="Home" asp-action="Index">Откажи</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

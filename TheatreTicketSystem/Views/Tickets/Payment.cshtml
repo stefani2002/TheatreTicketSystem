@@ -1,0 +1,116 @@
+﻿@model TheatreTicketSystem.Service.ViewModels.PaymentVm
+@{
+    ViewData["Title"] = "Payment";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-3">Payment</h2>
+
+    <div class="card p-3">
+        <h5 class="mb-2">@Model.PlayTitle</h5>
+        <div class="text-muted">@Model.ShowTime.ToString("dd.MM.yyyy HH:mm")</div>
+
+        <hr />
+
+        <div class="d-flex justify-content-between">
+            <div>Quantity:</div>
+            <div><strong>@Model.Quantity</strong></div>
+        </div>
+        <div class="d-flex justify-content-between">
+            <div>Total:</div>
+            <div><strong>@Model.TotalPrice MKD</strong></div>
+        </div>
+
+        <hr />
+
+        <div id="payment-message" class="text-danger mb-2"></div>
+
+        <form id="payment-form">
+            <div id="payment-element" class="mb-3"></div>
+
+            <button id="submit" type="submit" class="btn btn-danger w-100">
+                Pay & Download PDF
+            </button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <script>
+        const stripe = Stripe("@Model.StripePublishableKey");
+        const clientSecret = "@Model.PaymentIntentClientSecret";
+
+        let elements;
+
+        async function initStripe() {
+            elements = stripe.elements({ clientSecret });
+            const paymentElement = elements.create("payment");
+            paymentElement.mount("#payment-element");
+        }
+
+        initStripe();
+
+        const form = document.getElementById("payment-form");
+        const msg = document.getElementById("payment-message");
+        const submitBtn = document.getElementById("submit");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            msg.textContent = "";
+            submitBtn.disabled = true;
+
+            const { error, paymentIntent } = await stripe.confirmPayment({
+                elements,
+                confirmParams: { return_url: window.location.href },
+                redirect: "if_required"
+            });
+
+            if (error) {
+                msg.textContent = error.message || "Payment error.";
+                submitBtn.disabled = false;
+                return;
+            }
+
+            if (!paymentIntent || paymentIntent.status !== "succeeded") {
+                msg.textContent = "Payment was not completed.";
+                submitBtn.disabled = false;
+                return;
+            }
+
+            
+            const payload = {
+                showId: "@Model.ShowId",
+                quantity: @Model.Quantity,
+                paymentIntentId: paymentIntent.id
+            };
+
+            const res = await fetch("/Tickets/PayAndBuy", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+
+            if (!res.ok) {
+                const err = await res.json().catch(() => null);
+                msg.textContent = (err && err.error) ? err.error : "Server error.";
+                submitBtn.disabled = false;
+                return;
+            }
+
+           
+            const blob = await res.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "tickets.pdf";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+
+            submitBtn.disabled = false;
+        });
+    </script>
+}

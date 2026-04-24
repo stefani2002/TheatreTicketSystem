@@ -1,0 +1,54 @@
+﻿@{
+    ViewData["Title"] = "AI Assistant";
+}
+
+<h2>AI Assistant</h2>
+
+<div class="card p-3">
+    <div id="chatBox" style="height:300px; overflow-y:auto; border:1px solid #ddd; padding:10px; margin-bottom:10px;">
+        <div><em>Ask me about plays, shows, or tickets 🎭</em></div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <input id="messageInput" class="form-control" placeholder="Type a message..." />
+        <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<script>
+    async function sendMessage() {
+        const input = document.getElementById("messageInput");
+        const msg = input.value.trim();
+        if (!msg) return;
+
+        const chatBox = document.getElementById("chatBox");
+        chatBox.innerHTML += `<div><strong>You:</strong> ${escapeHtml(msg)}</div>`;
+        input.value = "";
+
+        const response = await fetch('/Chat/SendMessage', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: msg })
+        });
+
+        if (!response.ok) {
+            chatBox.innerHTML += `<div><strong>AI:</strong> Error: ${response.status}</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return;
+        }
+
+        const data = await response.json();
+        chatBox.innerHTML += `<div><strong>AI:</strong> ${escapeHtml(data.response)}</div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    
+    function escapeHtml(text) {
+        return text
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+</script>

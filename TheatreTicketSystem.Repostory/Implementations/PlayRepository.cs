@@ -26,11 +26,11 @@ namespace TheatreTicketSystem.Repostory.Implementations
                 .ToList();
         }
 
-        public Play GetById(Guid id)
+        public Play? GetById(Guid id)
         {
             return _context.Plays
-                .Include(p => p.Shows)
-                .FirstOrDefault(p => p.Id == id);
+        .Include(p => p.Shows)  
+        .FirstOrDefault(p => p.Id == id);
         }
     }
 }

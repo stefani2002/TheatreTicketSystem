@@ -1,0 +1,63 @@
+﻿@model TheatreTicketSystem.Domain.Entities.Play
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit</h2>
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data" class="mt-3">
+    <input type="hidden" name="id" value="@Model.Id" />
+
+    <div class="mb-3">
+        <label class="form-label">Име</label>
+        <input asp-for="Title" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Опис</label>
+        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Жанр</label>
+        <input asp-for="Genre" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Времетраење</label>
+        <input asp-for="DurationMinutes" type="number" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Слика</label><br />
+        @if (!string.IsNullOrWhiteSpace(Model.PosterImagePath))
+        {
+            <img src="@Model.PosterImagePath" style="width:220px;height:140px;object-fit:cover;border-radius:10px;" />
+        }
+        else
+        {
+            <span class="text-muted">No image uploaded</span>
+        }
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Нова слика</label>
+        <input type="file" name="posterImage" class="form-control" accept="image/*" />
+    </div>
+
+    <a class="btn btn-danger"
+       asp-controller="AdminShows"
+       asp-action="Index"
+       asp-route-playId="@Model.Id">
+        Закажи претстава
+    </a>
+
+    <hr />
+    <br />
+
+    <button type="submit" class="btn btn-primary">Update</button>
+
+    <a asp-action="Index" class="btn btn-secondary ms-2">Back</a>
+</form>
+
