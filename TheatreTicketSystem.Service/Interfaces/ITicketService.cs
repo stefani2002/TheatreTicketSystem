@@ -1,9 +1,8 @@
 ﻿using TheatreTicketSystem.Service.ViewModels;
 
-
 public interface ITicketService
 {
     PurchaseConfirmVm GetConfirmModel(Guid showId);
-    PaymentVm GetPaymentModel(Guid showId, int quantity);
-    byte[] ProcessPaymentAndBuy(PaymentVm vm, string userId);
+    Task<PaymentVm> GetPaymentModelAsync(Guid showId, int quantity);
+    Task<byte[]> ConfirmStripeAndBuyAsync(PaymentVm vm, string userId);
 }

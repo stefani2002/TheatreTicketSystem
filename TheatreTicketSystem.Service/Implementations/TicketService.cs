@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -10,17 +11,19 @@ using Document = QuestPDF.Fluent.Document;
 public class TicketService : ITicketService
 {
     private readonly ApplicationDbContext _context;
+    private readonly IStripePaymentService _stripe;
+    private readonly IConfiguration _config;
 
-    public TicketService(ApplicationDbContext context)
+    public TicketService(ApplicationDbContext context, IStripePaymentService stripe, IConfiguration config)
     {
         _context = context;
+        _stripe = stripe;
+        _config = config;
     }
-
 
     public PurchaseConfirmVm GetConfirmModel(Guid showId)
     {
         var show = _context.Shows
-            .AsNoTracking()
             .Include(s => s.Play)
             .FirstOrDefault(s => s.Id == showId);
 
@@ -37,17 +40,22 @@ public class TicketService : ITicketService
         };
     }
 
-  
-    public PaymentVm GetPaymentModel(Guid showId, int quantity)
+    public async Task<PaymentVm> GetPaymentModelAsync(Guid showId, int quantity)
     {
         var show = _context.Shows
-            .AsNoTracking()
             .Include(s => s.Play)
             .FirstOrDefault(s => s.Id == showId);
 
         if (show == null) return null;
-
         if (quantity < 1) quantity = 1;
+
+        var total = show.Price * quantity;
+
+
+        var publishableKey = _config["Stripe:PublishableKey"] ?? "";
+        var description = $"Tickets for {show.Play.Title} ({show.ShowTime:yyyy-MM-dd HH:mm}) x{quantity}";
+
+        var intent = await _stripe.CreatePaymentIntentAsync(total, "mkd", description);
 
         return new PaymentVm
         {
@@ -56,19 +64,15 @@ public class TicketService : ITicketService
             PlayTitle = show.Play.Title,
             ShowTime = show.ShowTime,
             UnitPrice = show.Price,
-            TotalPrice = show.Price * quantity,
+            TotalPrice = total,
 
-           
-            CardHolderName = "Test User",
-            CardNumber = "4242424242424242",
-            ExpMonth = 12,
-            ExpYear = 2030,
-            Cvv = "123"
+            StripePublishableKey = publishableKey,
+            PaymentIntentClientSecret = intent.ClientSecret
         };
     }
 
 
-    public byte[] ProcessPaymentAndBuy(PaymentVm vm, string userId)
+    public async Task<byte[]> ConfirmStripeAndBuyAsync(PaymentVm vm, string userId)
     {
         var show = _context.Shows
             .Include(s => s.Play)
@@ -77,65 +81,23 @@ public class TicketService : ITicketService
         if (show == null)
             throw new Exception("Show not found");
 
-        if (vm.Quantity < 1)
-            throw new Exception("Quantity must be at least 1");
+        if (vm.Quantity < 1 || vm.Quantity > show.AvailableSeats)
+            throw new Exception("Invalid quantity");
 
-        if (vm.Quantity > show.AvailableSeats)
-            throw new Exception($"Only {show.AvailableSeats} seats available");
+        if (string.IsNullOrWhiteSpace(vm.PaymentIntentId))
+            throw new Exception("Missing PaymentIntentId");
 
-        // ✅ Normalize input (важно!)
-        var cardNumber = (vm.CardNumber ?? "")
-            .Replace(" ", "")
-            .Replace("-", "")
-            .Trim();
+       
+        var intent = await _stripe.GetPaymentIntentAsync(vm.PaymentIntentId);
 
-        var cvv = (vm.Cvv ?? "").Trim();
+        if (intent == null || intent.Status != "succeeded")
+            throw new Exception("Payment not confirmed");
 
-        // (Optional) quick sanity checks for nicer errors
-        if (cardNumber.Length < 12)
-            throw new Exception("Card number is too short");
-
-        if (vm.ExpMonth < 1 || vm.ExpMonth > 12)
-            throw new Exception("Invalid expiry month");
-
-        if (vm.ExpYear < 2000)
-            throw new Exception("Invalid expiry year");
-
-        // Validate TEST card (from DB)
-        var card = _context.PaymentCards.FirstOrDefault(c =>
-            c.IsActive &&
-            c.CardNumber == cardNumber &&
-            c.Cvv == cvv &&
-            c.ExpMonth == vm.ExpMonth &&
-            c.ExpYear == vm.ExpYear);
-
-        if (card == null)
-        {
-            
-            var numberExists = _context.PaymentCards.Any(c => c.CardNumber == cardNumber);
-            if (!numberExists)
-                throw new Exception("Invalid test card (card number not found in database)");
-
-            var existsButNotMatch = _context.PaymentCards.Any(c =>
-                c.CardNumber == cardNumber && c.IsActive);
-
-            if (existsButNotMatch)
-                throw new Exception("Invalid test card (expiry/CVV mismatch)");
-
-            throw new Exception("Invalid test card");
-        }
 
         var total = show.Price * vm.Quantity;
 
-        if (card.Balance < total)
-            throw new Exception("Insufficient balance");
-
         using var tx = _context.Database.BeginTransaction();
 
-       
-        card.Balance -= total;
-
-       
         var order = new Order
         {
             Id = Guid.NewGuid(),
@@ -143,9 +105,9 @@ public class TicketService : ITicketService
             TotalPrice = total,
             UserId = userId
         };
+
         _context.Orders.Add(order);
 
-       
         var sold = show.TotalSeats - show.AvailableSeats;
         var startSeat = sold + 1;
 
@@ -178,13 +140,6 @@ public class TicketService : ITicketService
         return GeneratePdf(order.Id, show, vm.Quantity, total, codes);
     }
 
-    private byte[] LoadLogo()
-    {
-        var path = Path.Combine(Directory.GetCurrentDirectory(),
-                                 "wwwroot", "images", "logo.png");
-
-        return File.Exists(path) ? File.ReadAllBytes(path) : null;
-    }
     private byte[] GeneratePdf(Guid orderId, Show show, int quantity, decimal total, List<string> codes)
     {
         QuestPDF.Settings.License = LicenseType.Community;
@@ -193,34 +148,10 @@ public class TicketService : ITicketService
         {
             container.Page(page =>
             {
-                var logo = LoadLogo();
-
                 page.Margin(30);
                 page.Size(PageSizes.A4);
 
-                page.Header().Row(row =>
-                {
-                    row.Spacing(10);
-
-                    if (logo != null)
-                    {
-                        row.ConstantItem(60)
-                           .Height(60)
-                           .Image(logo)
-                           .FitArea();
-                    }
-
-                    row.RelativeItem().Column(col =>
-                    {
-                        col.Item().Text("Мој театар")
-                            .FontSize(20)
-                            .SemiBold();
-
-                        col.Item().Text("Ви благодатиме на довербата! 🎭")
-                            .FontSize(10)
-                            .FontColor(Colors.Grey.Medium);
-                    });
-                });
+                page.Header().Text("Theatre Ticket Receipt").FontSize(20).SemiBold();
 
                 page.Content().Column(col =>
                 {

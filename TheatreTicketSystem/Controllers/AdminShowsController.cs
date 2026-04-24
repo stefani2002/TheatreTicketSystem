@@ -51,7 +51,7 @@ namespace TheatreTicketSystem.Web.Controllers
         [HttpPost]
         public IActionResult Create(Show model)
         {
-            // PlayId мора да постои
+            
             var playExists = _context.Plays.Any(p => p.Id == model.PlayId);
             if (!playExists) return NotFound();
 
@@ -100,7 +100,7 @@ namespace TheatreTicketSystem.Web.Controllers
             show.Price = model.Price;
             show.TotalSeats = model.TotalSeats;
 
-            // Ако total seats се намали, да не падне available над него
+           
             show.AvailableSeats = Math.Min(model.AvailableSeats, model.TotalSeats);
 
             _context.SaveChanges();

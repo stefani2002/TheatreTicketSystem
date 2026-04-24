@@ -27,11 +27,11 @@ namespace TheatreTicketSystem.Service.Implementations
             if (string.IsNullOrWhiteSpace(userMessage))
                 return "Ask me about plays, showtimes, repertoire, or buying tickets.";
 
-            // 1) Pull real data from DB
-            var plays = _playService.GetAllPlays(); // repo includes Shows
+           
+            var plays = _playService.GetAllPlays(); 
             var theatreData = BuildTheatreData(plays);
 
-            // 2) Strict system instructions
+        
             var instructions = $"""
 You are the official AI assistant for the TheatreTicketSystem website.
 
@@ -48,7 +48,7 @@ THEATRE DATA:
 {theatreData}
 """;
 
-            // 3) Responses API payload
+       
             // POST https://api.openai.com/v1/responses
             var payload = new
             {
@@ -73,7 +73,7 @@ THEATRE DATA:
             var reply = ExtractOutputText(body);
             var text = (reply ?? "").Trim();
 
-            // Final guard: force English-only
+           
             if (string.IsNullOrWhiteSpace(text))
                 return "AI did not return a response. Please try again.";
 
@@ -142,12 +142,10 @@ THEATRE DATA:
                     cyrLetters++;
             }
 
-            // ✅ allow Cyrillic in play titles/descriptions, but require SOME English
-            // if there are at least ~12 Latin letters, we consider it English enough
+           
             if (latinLetters >= 12) return true;
 
-            // If almost everything is Cyrillic and very little Latin, it's not English
-            // (example: fully Macedonian answer)
+            
             if (cyrLetters > 30 && latinLetters < 6) return false;
 
             // Otherwise accept (short answers like "No plays available." etc.)
@@ -157,7 +155,7 @@ THEATRE DATA:
 
         private static string ExtractOutputText(string json)
         {
-            // Responses API often provides output_text; if missing, we try to parse output[].content[].text.
+            
             using var doc = JsonDocument.Parse(json);
             var root = doc.RootElement;
 
@@ -171,13 +169,13 @@ THEATRE DATA:
 
             foreach (var item in outputArr.EnumerateArray())
             {
-                // we only care about message-like content
+               
                 if (!item.TryGetProperty("content", out var contentArr) || contentArr.ValueKind != JsonValueKind.Array)
                     continue;
 
                 foreach (var c in contentArr.EnumerateArray())
                 {
-                    // content items can be {type:"output_text", text:"..."} or similar
+                   
                     if (c.TryGetProperty("text", out var t) && t.ValueKind == JsonValueKind.String)
                         sb.AppendLine(t.GetString());
                 }

@@ -14,7 +14,7 @@ namespace TheatreTicketSystem.Domain.Entities
         public Guid ShowId { get; set; }
         public Show? Show { get; set; }
         public string Code { get; set; } = Guid.NewGuid().ToString("N").ToUpper();
-        public string UserId { get; set; } //Identity User
+        public string UserId { get; set; } 
         public Guid OrderId { get; set; }
         public Order? Order { get; set; }
     }

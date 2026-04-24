@@ -23,15 +23,15 @@ namespace TheatreTicketSystem.Service.Implementations
             var daysInMonth = DateTime.DaysInMonth(year, month);
             var lastDay = new DateTime(year, month, daysInMonth);
 
-            // Calendar starts on Monday
-            int diffToMonday = ((int)firstDay.DayOfWeek + 6) % 7; // Mon=0..Sun=6
+            
+            int diffToMonday = ((int)firstDay.DayOfWeek + 6) % 7; 
             var calendarStart = firstDay.AddDays(-diffToMonday);
 
-            // End on Sunday
+            
             int diffToSunday = 6 - (((int)lastDay.DayOfWeek + 6) % 7);
             var calendarEnd = lastDay.AddDays(diffToSunday);
 
-            // Load all shows in visible range (so we can display prev/next month overflow days too)
+            
             var shows = _context.Shows
                 .AsNoTracking()
                 .Include(s => s.Play)
@@ -48,7 +48,7 @@ namespace TheatreTicketSystem.Service.Implementations
                 })
                 .ToList();
 
-            // Group by date
+            
             var byDate = shows
                 .GroupBy(s => s.ShowTime.Date)
                 .ToDictionary(g => g.Key, g => g.ToList());

@@ -19,7 +19,7 @@
         <nav class="navbar navbar-expand-sm theatre-nav mb-3">
             <div class="container-fluid position-relative">
 
-                <!-- LEFT: Logo + Brand -->
+                
                 <div class="d-flex align-items-center">
                     <a class="navbar-brand d-flex align-items-center gap-2"
                        asp-controller="Plays" asp-action="Index">
@@ -30,7 +30,7 @@
                     </a>
                 </div>
 
-                <!-- CENTER: Navigation -->
+                
                 <div class="collapse navbar-collapse justify-content-center" id="mainNav">
                     <ul class="navbar-nav gap-2">
                         <li class="nav-item">
@@ -53,7 +53,7 @@
                     </ul>
                 </div>
 
-                <!-- RIGHT: Auth -->
+                
                 <div class="d-flex align-items-center ms-auto gap-2">
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
@@ -77,7 +77,7 @@
                     }
                 </div>
 
-                <!-- Mobile toggle -->
+                
                 <button class="navbar-toggler position-absolute end-0 me-3"
                         type="button"
                         data-bs-toggle="collapse"
@@ -139,7 +139,7 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 
-    <!-- Chatbot Floating Button + Popup -->
+    <!-- Chatbot -->
     <div id="chatbot" class="chatbot">
         <button id="chatbot-btn" class="chatbot__fab" type="button" aria-label="Open chat">
             <span class="chatbot__fabIcon">💬</span>

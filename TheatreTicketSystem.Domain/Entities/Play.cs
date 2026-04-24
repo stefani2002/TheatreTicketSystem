@@ -15,7 +15,6 @@ namespace TheatreTicketSystem.Domain.Entities
         public string Genre { get; set; }
         public int DurationMinutes { get; set; }
 
-
         public ICollection<Show> Shows { get; set; } = new List<Show>();
     }
 }

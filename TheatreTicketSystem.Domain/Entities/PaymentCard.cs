@@ -6,11 +6,11 @@ namespace TheatreTicketSystem.Domain.Entities
     {
         public Guid Id { get; set; }
         public string CardHolderName { get; set; } = "";
-        public string CardNumber { get; set; } = "";  // test-only
+        public string CardNumber { get; set; } = "";  
         public int ExpMonth { get; set; }
         public int ExpYear { get; set; }
-        public string Cvv { get; set; } = "";         // test-only
-        public decimal Balance { get; set; }          // test-only
+        public string Cvv { get; set; } = "";         
+        public decimal Balance { get; set; }          
         public bool IsActive { get; set; } = true;
     }
 }

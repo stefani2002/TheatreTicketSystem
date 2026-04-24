@@ -13,16 +13,13 @@ public class TicketsController : Controller
         _ticketService = ticketService;
     }
 
-    // STEP 1: Confirm page
     public IActionResult Confirm(Guid showId)
     {
         var vm = _ticketService.GetConfirmModel(showId);
         if (vm == null) return NotFound();
-
         return View(vm);
     }
 
-    // STEP 2: Confirm POST → Payment
     [HttpPost]
     public IActionResult Confirm(PurchaseConfirmVm vm)
     {
@@ -33,26 +30,26 @@ public class TicketsController : Controller
             new { showId = vm.ShowId, quantity = vm.Quantity });
     }
 
-    // STEP 3: Payment page
-    public IActionResult Payment(Guid showId, int quantity)
+    public async Task<IActionResult> Payment(Guid showId, int quantity)
     {
-        var vm = _ticketService.GetPaymentModel(showId, quantity);
+        var vm = await _ticketService.GetPaymentModelAsync(showId, quantity);
         if (vm == null) return NotFound();
-
         return View(vm);
     }
 
-    // STEP 4: BUY + PDF
     [HttpPost]
-    public IActionResult PayAndBuy(PaymentVm vm)
+    public async Task<IActionResult> PayAndBuy([FromBody] PaymentVm vm)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
-        var pdfBytes = _ticketService.ProcessPaymentAndBuy(vm, userId);
-
-        if (pdfBytes == null)
-            return View("Payment", vm);
-
-        return File(pdfBytes, "application/pdf", "tickets.pdf");
+        try
+        {
+            var pdfBytes = await _ticketService.ConfirmStripeAndBuyAsync(vm, userId);
+            return File(pdfBytes, "application/pdf", "tickets.pdf");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 }

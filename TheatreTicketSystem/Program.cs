@@ -7,8 +7,11 @@ using TheatreTicketSystem.Repostory.Implementations;
 using TheatreTicketSystem.Repostory.Interfaces;
 using TheatreTicketSystem.Service.Implementations;
 using TheatreTicketSystem.Service.Interfaces;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
+
+StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -22,7 +25,13 @@ builder.Services.AddRazorPages();
 builder.Services.AddScoped<IPlayRepository, PlayRepository>();
 builder.Services.AddScoped<IShowRepository, ShowRepository>();
 
+
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<IStripePaymentService, StripePaymentService>();
 builder.Services.AddScoped<ITicketService, TicketService>();
+
+
 builder.Services.AddScoped<IRepertoireService, RepertoireService>();
 
 builder.Services.AddScoped<IPlayService, PlayService>();
@@ -95,7 +104,7 @@ async Task SeedAdminAsync(WebApplication app)
     var password = config["AdminAccount:Password"];
 
     if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
-        return; // нема конфиг
+        return; 
 
     var adminUser = await userManager.FindByEmailAsync(email);
     if (adminUser == null)

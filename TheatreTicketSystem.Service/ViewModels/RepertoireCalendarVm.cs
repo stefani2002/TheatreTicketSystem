@@ -3,9 +3,9 @@
     public class RepertoireCalendarVm
     {
         public int Year { get; set; }
-        public int Month { get; set; } // 1-12
+        public int Month { get; set; } 
 
-        // Calendar grid (weeks x days)
+       
         public List<List<CalendarDayVm>> Weeks { get; set; } = new();
     }
 

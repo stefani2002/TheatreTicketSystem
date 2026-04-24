@@ -21,7 +21,7 @@ body {
   margin-bottom: 60px;
 }
 
-/* ---- Payment card UI ---- */
+/* ---- Payment card ---- */
 .pay-card {
     border-radius: 16px;
     padding: 18px;
@@ -98,9 +98,7 @@ body {
     color: #6b7280;
 }
 
-/* =========================
-   THEATRE CHATBOT (Modern UI)
-   ========================= */
+/* Chatbot */
 
 .chatbot {
     position: fixed;
@@ -411,7 +409,7 @@ a {
         background: rgba(255,255,255,.06);
     }
 
-    /* Active link underline */
+    
     .theatre-nav .nav-link.active::after {
         content: "";
         position: absolute;
@@ -651,7 +649,7 @@ html {
         color: var(--gold);
     }
 
-/* Repertoire calendar tweaks (uses your existing classes) */
+/* Repertoire calendar */
 .cal-cell {
     border-color: rgba(255,255,255,.10) !important;
 }
@@ -660,7 +658,7 @@ html {
     background: rgba(255,255,255,.04) !important;
 }
 
-/* ===== Landing (no background) ===== */
+/* ===== Landing  ===== */
 .landing-wrap {
     min-height: calc(100vh - 160px);
     display: flex;
@@ -687,13 +685,13 @@ html {
     }
 }
 
-/* Poster: longer but not full page */
+/* Poster */
 .landing-poster {
-    height: 420px; /* можеш 420–520 */
+    height: 420px; 
     border-radius: 16px;
     overflow: hidden;
     border: 1px solid rgba(255,255,255,.10);
-    background: rgba(0,0,0,.35); /* да изгледа убаво околу poster */
+    background: rgba(0,0,0,.35); 
     display: flex;
     align-items: center;
     justify-content: center;
@@ -702,7 +700,7 @@ html {
     .landing-poster img {
         max-width: 100%;
         max-height: 100%;
-        object-fit: contain; /* ✅ покажува цел постер */
+        object-fit: contain; 
     }
 
 .no-poster {
@@ -724,17 +722,17 @@ html {
     margin-top: 8px;
 }
 
-/* Description: limited to poster height with ellipsis */
+/* Description */
 .landing-desc {
     margin-top: 12px;
     color: rgba(229,231,235,.86);
     line-height: 1.55;
-    /* clamp to height */
-    max-height: 360px; /* <-- исто како poster height */
+   
+    max-height: 360px; 
     overflow: hidden;
-    /* multi-line ellipsis */
+   
     display: -webkit-box;
-    -webkit-line-clamp: 10; /* <-- ако сакаш повеќе/помалку линии менувај */
+    -webkit-line-clamp: 10; 
     -webkit-box-orient: vertical;
 }
 

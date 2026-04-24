@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const input = document.getElementById("chatbot-text");
     const sendBtn = document.getElementById("chatbot-send");
 
-    // If chatbot is not on this page/layout, do nothing
+    
     if (!btn || !popup || !closeBtn || !messages || !input || !sendBtn) return;
 
     function addMessage(text, who) {
