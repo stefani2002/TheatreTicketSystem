@@ -2,8 +2,6 @@
 
 **A web application for managing theatre plays, showtimes, and ticket sales.**
 
-Authors: Stefani Eftimovska (211062) and Marija Avramoska (211004)
-Faculty of Computer Science and Engineering (FINKI), Skopje
 
 > ⚠️ Payments run in **Stripe test mode** only. The app is developed for a local environment and is not production-ready without additional configuration.
 
@@ -139,6 +137,3 @@ Manual test scenarios cover:
 
 Stripe, OpenAI, iText, Tailwind CSS, diagrams.net, and TemplateMo for the design template.
 
-## License
-
-Add your license here (e.g. MIT).
